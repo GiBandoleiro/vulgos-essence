@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vulgos Essence - Perfumaria</title>
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 125' fill='%23D4AF37'%3E%3Cpath d='M50,0C27.9,0,10,17.9,10,40c0,22.1,40,60,40,60s40-37.9,40-60C90,17.9,72.1,0,50,0z M50,55c-8.3,0-15-6.7-15-15s6.7-15,15-15 s15,6.7,15,15S58.3,55,50,55z'/%3E%3C/svg%3E" type="image/svg+xml">
+    <!-- Favicon (Ícone da Aba) -->
+    <link rel="icon" href="logoSite.png">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,6 +22,10 @@
             --black: #0a0a0a;
             --white: #f5f5f5;
             --gray: #888;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -126,7 +130,7 @@
         }
         
         /* Contador do Carrinho */
-        #cart-count {
+        .cart-counter {
             position: absolute;
             top: -8px;
             right: -12px;
@@ -142,10 +146,10 @@
             justify-content: center;
             transition: transform 0.2s ease;
         }
-        #cart-count:empty {
+        .cart-counter:empty {
             display: none;
         }
-        #cart-count.updated {
+        .cart-counter.updated {
             transform: scale(1.2);
         }
         
@@ -186,7 +190,7 @@
                 <a href="#" class="nav-link hover:text-gold transition" data-category="Feminino" data-page="products">Femininos</a>
                 <a href="#" class="nav-link relative" data-page="cart">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hover:stroke-gold transition"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                    <span id="cart-count"></span>
+                    <span class="cart-counter"></span>
                 </a>
             </div>
             <div class="md:hidden">
@@ -200,8 +204,10 @@
             <a href="#" class="nav-link hover:text-gold transition" data-page="home">Início</a>
             <a href="#" class="nav-link hover:text-gold transition" data-category="Masculino" data-page="products">Masculinos</a>
             <a href="#" class="nav-link hover:text-gold transition" data-category="Feminino" data-page="products">Femininos</a>
-            <a href="#" class="nav-link relative" data-page="cart">
+            <a href="#" class="nav-link relative flex items-center gap-2" data-page="cart">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hover:stroke-gold transition"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                 Carrinho
+                <span class="cart-counter" style="position: static; transform: none;"></span>
             </a>
         </div>
     </header>
@@ -210,7 +216,7 @@
         <!-- PÁGINA INICIAL -->
         <section id="home-page" class="page active">
             <!-- Banner -->
-            <div class="h-[50vh] md:h-[60vh] bg-cover bg-center bg-no-repeat flex items-center justify-center" style="background-image: url('banner.webp');">
+            <div class="h-[60vh] md:h-[60vh] bg-cover bg-center bg-no-repeat flex items-center justify-center" style="background-image: url('banner.webp');">
                 <div class="text-center">
                     <h1 class="text-3xl md:text-5xl font-display text-shadow">Perfumes que marcam, sem pedir licença</h1>
                 </div>
@@ -230,7 +236,7 @@
             <div class="py-20">
                 <div class="container mx-auto px-6">
                     <h2 class="text-3xl md:text-4xl font-display text-center mb-12">Destaques da Semana</h2>
-                    <div id="featured-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         <!-- Produtos em destaque serão inseridos aqui pelo JS -->
                     </div>
                 </div>
@@ -240,7 +246,7 @@
         <!-- PÁGINA DE PRODUTOS (LISTAGEM) -->
         <section id="products-page" class="page container mx-auto px-6 py-20">
             <h2 id="products-title" class="text-4xl font-display text-center mb-12">Nossos Perfumes</h2>
-            <div id="products-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div id="products-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <!-- Lista de produtos será inserida aqui -->
             </div>
         </section>
@@ -479,16 +485,18 @@
 
         // --- LÓGICA DO CARRINHO ---
         const updateCartCount = () => {
-            const cartCountElement = document.getElementById('cart-count');
+            const cartCountElements = document.querySelectorAll('.cart-counter');
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             
-            if (totalItems > 0) {
-                cartCountElement.textContent = totalItems;
-                cartCountElement.classList.add('updated');
-                setTimeout(() => cartCountElement.classList.remove('updated'), 200);
-            } else {
-                cartCountElement.textContent = '';
-            }
+            cartCountElements.forEach(el => {
+                if (totalItems > 0) {
+                    el.textContent = totalItems;
+                    el.classList.add('updated');
+                    setTimeout(() => el.classList.remove('updated'), 200);
+                } else {
+                    el.textContent = '';
+                }
+            });
         };
 
         const saveCart = () => {
@@ -558,7 +566,7 @@
             const itemsHtml = cart.map(item => {
                 subtotal += item.price * item.quantity;
                 return `
-                    <div class="flex items-center justify-between border-b border-gold/20 py-4">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-gold/20 py-4 gap-4">
                         <div class="flex items-center gap-4">
                             <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-contain rounded">
                             <div>
@@ -567,23 +575,25 @@
                                 <button onclick="app.removeFromCart(${item.id})" class="text-xs text-gray-400 hover:text-red-500 transition">Remover</button>
                             </div>
                         </div>
-                        <div class="flex items-center gap-4">
-                            <button onclick="app.updateQuantity(${item.id}, -1)" class="px-2 border border-gold/50 rounded">-</button>
-                            <span>${item.quantity}</span>
-                            <button onclick="app.updateQuantity(${item.id}, 1)" class="px-2 border border-gold/50 rounded">+</button>
-                        </div>
-                        <div class="font-bold w-24 text-right">
-                            ${formatCurrency(item.price * item.quantity)}
+                        <div class="w-full sm:w-auto flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <button onclick="app.updateQuantity(${item.id}, -1)" class="px-2 border border-gold/50 rounded">-</button>
+                                <span>${item.quantity}</span>
+                                <button onclick="app.updateQuantity(${item.id}, 1)" class="px-2 border border-gold/50 rounded">+</button>
+                            </div>
+                            <div class="font-bold w-24 text-right sm:ml-8">
+                                ${formatCurrency(item.price * item.quantity)}
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
             
             container.innerHTML = `
-                <div class="bg-[#111] p-6 rounded-lg">
+                <div class="bg-[#111] p-4 sm:p-6 rounded-lg">
                     ${itemsHtml}
                     <div class="text-right mt-6">
-                        <h3 class="text-2xl">Total: <span class="font-display text-gold">${formatCurrency(subtotal)}</span></h3>
+                        <h3 class="text-xl sm:text-2xl">Total: <span class="font-display text-gold">${formatCurrency(subtotal)}</span></h3>
                     </div>
                 </div>
 
