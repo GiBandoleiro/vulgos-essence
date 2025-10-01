@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vulgos Essence - Perfumaria</title>
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 125' fill='%23D4AF37'%3E%3Cpath d='M50,0C27.9,0,10,17.9,10,40c0,22.1,40,60,40,60s40-37.9,40-60C90,17.9,72.1,0,50,0z M50,55c-8.3,0-15-6.7-15-15s6.7-15,15-15 s15,6.7,15,15S58.3,55,50,55z'/%3E%3C/svg%3E" type="image/svg+xml">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Raleway:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* Custom Styles */
+        :root {
+            --gold: #D4AF37;
+            --black: #0a0a0a;
+            --white: #f5f5f5;
+            --gray: #888;
+        }
+
+        body {
+            background-color: var(--black);
+            color: var(--white);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Tipografia */
+        h1, h2, h3, .font-display {
+            font-family: 'Raleway', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--gold);
+        }
+
+        /* Destaques em Dourado */
+        .text-gold { color: var(--gold); }
+        .bg-gold { background-color: var(--gold); }
+        .border-gold { border-color: var(--gold); }
+
+        /* Botões */
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 1px;
+            border: 2px solid var(--gold);
+            background-color: transparent;
+            color: var(--gold);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: var(--gold);
+            color: var(--black);
+        }
+        .btn-filled {
+            background-color: var(--gold);
+            color: var(--black);
+        }
+        .btn-filled:hover {
+            background-color: transparent;
+            color: var(--gold);
+        }
+
+
+        /* Navbar Fixa */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Efeito de preço riscado */
+        .price-old {
+            text-decoration: line-through;
+            color: var(--gray);
+            margin-right: 0.5rem;
+        }
+        .price-new {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        /* Animação suave para as seções */
+        .page {
+            display: none; /* Oculta todas as páginas por padrão */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .page.active {
+            display: block; /* Mostra a página ativa */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Estilo para a gota no logo */
+        .logo-drop {
+            width: 1.2em;
+            height: 1.2em;
+            stroke: var(--gold);
+            stroke-width: 5;
+            fill: none;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+            transform: rotate(180deg);
+        }
+        
+        /* Contador do Carrinho */
+        #cart-count {
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            background-color: var(--gold);
+            color: var(--black);
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+        #cart-count:empty {
+            display: none;
+        }
+        #cart-count.updated {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="w-full border-b border-gold/20">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="logo-link text-2xl font-display tracking-wider" data-page="home">
+                <svg class="logo-drop inline-block" viewBox="-2 -2 36 36" xmlns="http://www.w3.org/2000/svg"><path d="M16,32C9.5,20.4,4,16.4,4,9.6C4,4.3,9.3,0,16,0s12,4.3,12,9.6C28,16.4,22.5,20.4,16,32z"/></svg>
+                Vulgos Essence
+            </a>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#" class="nav-link hover:text-gold transition" data-page="home">Início</a>
+                <a href="#" class="nav-link hover:text-gold transition" data-category="Masculino" data-page="products">Masculinos</a>
+                <a href="#" class="nav-link hover:text-gold transition" data-category="Feminino" data-page="products">Femininos</a>
+                <a href="#" class="nav-link relative" data-page="cart">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hover:stroke-gold transition"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                    <span id="cart-count"></span>
+                </a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4 flex flex-col items-center space-y-4">
+            <a href="#" class="nav-link hover:text-gold transition" data-page="home">Início</a>
+            <a href="#" class="nav-link hover:text-gold transition" data-category="Masculino" data-page="products">Masculinos</a>
+            <a href="#" class="nav-link hover:text-gold transition" data-category="Feminino" data-page="products">Femininos</a>
+            <a href="#" class="nav-link relative" data-page="cart">
+                Carrinho
+            </a>
+        </div>
+    </header>
+
+    <main class="pt-20">
+        <!-- PÁGINA INICIAL -->
+        <section id="home-page" class="page active">
+            <!-- Banner -->
+            <div class="h-[50vh] md:h-[60vh] bg-cover bg-center bg-no-repeat flex items-center justify-center" style="background-image: url('https://placehold.co/1920x800/0a0a0a/1a1a1a?text=');">
+                <div class="text-center bg-black/50 p-8 rounded-lg">
+                    <h1 class="text-3xl md:text-5xl font-display">Perfumes que marcam, sem pedir licença</h1>
+                </div>
+            </div>
+            
+            <!-- Categorias -->
+            <div class="py-20 text-center container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-display mb-2">Perfumes Árabes</h2>
+                <p class="mb-12">Explore nossas coleções exclusivas.</p>
+                <div class="flex flex-col md:flex-row justify-center items-center gap-6">
+                    <button class="btn text-xl w-full md:w-auto nav-link" data-category="Masculino" data-page="products">Masculinos</button>
+                    <button class="btn text-xl w-full md:w-auto nav-link" data-category="Feminino" data-page="products">Femininos</button>
+                </div>
+            </div>
+
+            <!-- Destaques -->
+            <div class="py-20">
+                <div class="container mx-auto px-6">
+                    <h2 class="text-3xl md:text-4xl font-display text-center mb-12">Destaques da Semana</h2>
+                    <div id="featured-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- Produtos em destaque serão inseridos aqui pelo JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PÁGINA DE PRODUTOS (LISTAGEM) -->
+        <section id="products-page" class="page container mx-auto px-6 py-20">
+            <h2 id="products-title" class="text-4xl font-display text-center mb-12">Nossos Perfumes</h2>
+            <div id="products-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Lista de produtos será inserida aqui -->
+            </div>
+        </section>
+
+        <!-- PÁGINA DE DETALHE DO PRODUTO -->
+        <section id="product-detail-page" class="page container mx-auto px-6 py-20">
+             <!-- Detalhes do produto serão inseridos aqui -->
+        </section>
+
+        <!-- PÁGINA DO CARRINHO -->
+        <section id="cart-page" class="page container mx-auto px-6 py-20 min-h-screen">
+             <h2 class="text-4xl font-display text-center mb-12">Carrinho de Compras</h2>
+             <div id="cart-content" class="w-full">
+                 <!-- Conteúdo do carrinho será inserido aqui -->
+             </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-gold/20 mt-20 py-10">
+        <div class="container mx-auto px-6 text-center text-gray-400">
+            <p>&copy; 2025 Vulgos Essence. Todos os direitos reservados.</p>
+            <p class="text-sm">Desenvolvido com elegância.</p>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- DADOS DOS PRODUTOS ---
+        const products = [
+            {
+                id: 1,
+                name: "Asad Tradicional",
+                category: "Masculino",
+                price_old: 249.90,
+                price_new: 219.90,
+                image: "https://i.ibb.co/68qjw5p/image-9f69d1.png",
+                description: "Uma fragrância marcante e sofisticada, com notas de especiarias e um toque amadeirado. Perfeito para o homem moderno que não tem medo de se destacar.",
+                featured: true,
+            },
+            {
+                id: 2,
+                name: "Club de Nuit Intense Man",
+                category: "Masculino",
+                price_old: 319.90,
+                price_new: 299.90,
+                image: "https://i.ibb.co/hX4K9hG/image-9f69ea.png",
+                description: "Um ícone da perfumaria, conhecido por sua projeção e longevidade. Combina notas cítricas de abacaxi e limão com um corpo robusto de bétula e patchouli.",
+                featured: true,
+            },
+            {
+                id: 3,
+                name: "Qaed al Fursan",
+                category: "Masculino",
+                price_old: 239.90,
+                price_new: 179.90,
+                image: "https://i.ibb.co/F8W2zFf/image-9f69ed.png",
+                description: "Uma fragrância exótica e envolvente. Suas notas de abacaxi e açafrão criam uma abertura única, seguida por um coração floral e uma base de oud e baunilha.",
+                featured: true,
+            },
+            {
+                id: 4,
+                name: "Asad Bourbon",
+                category: "Masculino",
+                price_old: 319.90,
+                price_new: 294.90,
+                image: "https://i.ibb.co/QjFqVmc/image-9f69f1.png",
+                description: "Uma variação intensa e adocicada do Asad original. As notas de bourbon trazem uma complexidade rica e quente, ideal para noites especiais.",
+                featured: false,
+            },
+            {
+                id: 5,
+                name: "Fakhar Gold",
+                category: "Masculino",
+                price_old: 329.90,
+                price_new: 294.90,
+                image: "https://i.ibb.co/64G1xYJ/image-9f6a0b.png",
+                description: "Luxo e opulência em um frasco. Fakhar Gold combina notas frescas e frutadas com um coração floral e uma base amadeirada, criando um aroma inesquecível.",
+                featured: false,
+            },
+             {
+                id: 6,
+                name: "Perfume Feminino Exemplo 1",
+                category: "Feminino",
+                price_old: 299.90,
+                price_new: 259.90,
+                image: "https://placehold.co/400x400/0a0a0a/D4AF37?text=Em+Breve",
+                description: "Descrição do perfume feminino em breve.",
+                featured: false,
+            },
+        ];
+
+        const whatsappIcon = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-block" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01s-.521.074-.792.372c-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.289.173-1.413z"/></svg>`;
+
+        // --- VARIÁVEIS GLOBAIS ---
+        const pages = document.querySelectorAll('.page');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const logoLink = document.querySelector('.logo-link');
+        const WHATSAPP_NUMBER = "5519997750045";
+
+        // --- INICIALIZAÇÃO ---
+        let cart = JSON.parse(localStorage.getItem('vulgosEssenceCart')) || [];
+        
+        const init = () => {
+            renderFeaturedProducts();
+            updateCartCount();
+            navigateTo('home');
+        };
+
+        // --- ROTEAMENTO E NAVEGAÇÃO ---
+        const navigateTo = (pageId, param = null) => {
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.getElementById(`${pageId}-page`);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                window.scrollTo(0, 0);
+
+                // Lógica específica da página
+                if (pageId === 'products') renderProductsList(param);
+                if (pageId === 'product-detail') renderProductDetail(param);
+                if (pageId === 'cart') renderCart();
+            }
+        };
+
+        // Event Listeners para Navegação
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = link.dataset.page;
+                const category = link.dataset.category;
+                const productId = link.dataset.id;
+                
+                let param = category || productId;
+                navigateTo(page, param);
+
+                // Fecha o menu mobile ao clicar
+                const mobileMenu = document.getElementById('mobile-menu');
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            });
+        });
+        
+        logoLink.addEventListener('click', (e) => {
+             e.preventDefault();
+             navigateTo('home');
+        });
+
+        // Menu Mobile
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // --- RENDERIZAÇÃO DE CONTEÚDO ---
+        
+        const formatCurrency = (value) => {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        };
+
+        const createProductCard = (product) => {
+            return `
+                <div class="border border-gold/20 rounded-lg p-4 flex flex-col text-center bg-[#111] hover:border-gold transition duration-300 transform hover:-translate-y-1">
+                    <div class="cursor-pointer nav-link" data-page="product-detail" data-id="${product.id}">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-48 md:h-64 object-contain rounded-md mb-4">
+                        <h3 class="text-xl font-medium flex-grow">${product.name}</h3>
+                    </div>
+                    <div class="my-4">
+                        <span class="price-old">${formatCurrency(product.price_old)}</span>
+                        <span class="price-new">${formatCurrency(product.price_new)}</span>
+                    </div>
+                    <button class="btn mt-auto" onclick="app.addToCart(${product.id})">Adicionar ao Carrinho</button>
+                </div>
+            `;
+        };
+        
+        const renderFeaturedProducts = () => {
+            const container = document.getElementById('featured-products');
+            const featured = products.filter(p => p.featured);
+            container.innerHTML = featured.map(createProductCard).join('');
+            rebindNavLinks();
+        };
+
+        const renderProductsList = (category) => {
+            const container = document.getElementById('products-list');
+            const title = document.getElementById('products-title');
+            
+            title.textContent = `Perfumes ${category === 'Feminino' ? 'Femininos' : 'Masculinos'}`;
+            const filteredProducts = products.filter(p => p.category === category);
+            
+            if (filteredProducts.length > 0) {
+                 container.innerHTML = filteredProducts.map(createProductCard).join('');
+            } else {
+                 container.innerHTML = `<p class="text-center col-span-full">Nenhum produto encontrado nesta categoria ainda. Volte em breve!</p>`;
+            }
+            rebindNavLinks();
+        };
+        
+        const renderProductDetail = (productId) => {
+            const container = document.getElementById('product-detail-page');
+            const product = products.find(p => p.id == productId);
+
+            if (product) {
+                const whatsappMessage = encodeURIComponent(`Olá, tenho interesse no perfume ${product.name}!`);
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+                        <div>
+                            <img src="${product.image}" alt="${product.name}" class="w-full rounded-lg shadow-lg shadow-gold/10">
+                        </div>
+                        <div>
+                            <h2 class="text-4xl lg:text-5xl font-display mb-4">${product.name}</h2>
+                            <div class="mb-6">
+                                <span class="price-old text-xl">${formatCurrency(product.price_old)}</span>
+                                <span class="price-new text-3xl">${formatCurrency(product.price_new)}</span>
+                            </div>
+                            <p class="text-gray-300 leading-relaxed mb-8">${product.description}</p>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <button class="btn btn-filled flex-grow" onclick="app.addToCart(${product.id})">Adicionar ao Carrinho</button>
+                                <a href="https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}" target="_blank" class="btn flex-grow flex items-center justify-center gap-2">
+                                    ${whatsappIcon}
+                                    Falar no WhatsApp
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `<p class="text-center">Produto não encontrado.</p>`;
+            }
+        };
+
+        // --- LÓGICA DO CARRINHO ---
+        const updateCartCount = () => {
+            const cartCountElement = document.getElementById('cart-count');
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            
+            if (totalItems > 0) {
+                cartCountElement.textContent = totalItems;
+                cartCountElement.classList.add('updated');
+                setTimeout(() => cartCountElement.classList.remove('updated'), 200);
+            } else {
+                cartCountElement.textContent = '';
+            }
+        };
+
+        const saveCart = () => {
+            localStorage.setItem('vulgosEssenceCart', JSON.stringify(cart));
+            updateCartCount();
+        };
+
+        window.app = { // Expondo funções para o onclick
+            addToCart: (productId) => {
+                const product = products.find(p => p.id === productId);
+                if (!product) return;
+
+                const cartItem = cart.find(item => item.id === productId);
+
+                if (cartItem) {
+                    cartItem.quantity++;
+                } else {
+                    cart.push({ id: productId, name: product.name, price: product.price_new, image: product.image, quantity: 1 });
+                }
+                
+                saveCart();
+                alert(`${product.name} foi adicionado ao carrinho!`);
+            },
+            
+            updateQuantity: (productId, change) => {
+                const cartItem = cart.find(item => item.id === productId);
+                if (cartItem) {
+                    cartItem.quantity += change;
+                    if (cartItem.quantity <= 0) {
+                        cart = cart.filter(item => item.id !== productId);
+                    }
+                    saveCart();
+                    renderCart();
+                }
+            },
+            
+            removeFromCart: (productId) => {
+                 cart = cart.filter(item => item.id !== productId);
+                 saveCart();
+                 renderCart();
+            }
+        };
+        
+        const renderCart = () => {
+            const container = document.getElementById('cart-content');
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center">
+                        <p class="text-xl mb-6">Seu carrinho está vazio.</p>
+                        <button class="btn nav-link" data-page="home">Continuar comprando</button>
+                    </div>
+                `;
+                rebindNavLinks();
+                return;
+            }
+
+            let subtotal = 0;
+            const itemsHtml = cart.map(item => {
+                subtotal += item.price * item.quantity;
+                return `
+                    <div class="flex items-center justify-between border-b border-gold/20 py-4">
+                        <div class="flex items-center gap-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-contain rounded">
+                            <div>
+                                <h4 class="font-bold">${item.name}</h4>
+                                <p class="text-gold">${formatCurrency(item.price)}</p>
+                                <button onclick="app.removeFromCart(${item.id})" class="text-xs text-gray-400 hover:text-red-500 transition">Remover</button>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <button onclick="app.updateQuantity(${item.id}, -1)" class="px-2 border border-gold/50 rounded">-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="app.updateQuantity(${item.id}, 1)" class="px-2 border border-gold/50 rounded">+</button>
+                        </div>
+                        <div class="font-bold w-24 text-right">
+                            ${formatCurrency(item.price * item.quantity)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML = `
+                <div class="bg-[#111] p-6 rounded-lg">
+                    ${itemsHtml}
+                    <div class="text-right mt-6">
+                        <h3 class="text-2xl">Total: <span class="font-display text-gold">${formatCurrency(subtotal)}</span></h3>
+                    </div>
+                </div>
+
+                <div class="mt-12">
+                    <h3 class="text-2xl font-display text-center mb-6">Informações para Entrega</h3>
+                    <form id="checkout-form" class="max-w-lg mx-auto space-y-4">
+                        <input type="text" id="name" placeholder="Nome Completo" class="w-full p-3 bg-transparent border border-gold/50 rounded focus:border-gold focus:outline-none">
+                        <input type="text" id="address" placeholder="Endereço Completo" class="w-full p-3 bg-transparent border border-gold/50 rounded focus:border-gold focus:outline-none">
+                        <input type="tel" id="phone" placeholder="Telefone (WhatsApp)" class="w-full p-3 bg-transparent border border-gold/50 rounded focus:border-gold focus:outline-none">
+                        <button type="submit" class="btn btn-filled w-full mt-4 !text-lg flex items-center justify-center gap-2">
+                            ${whatsappIcon}
+                            Finalizar no WhatsApp
+                        </button>
+                    </form>
+                </div>
+            `;
+            
+            document.getElementById('checkout-form').addEventListener('submit', handleCheckout);
+        };
+        
+        const handleCheckout = (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const address = document.getElementById('address').value;
+            const phone = document.getElementById('phone').value;
+
+            let message = "Olá, gostaria de finalizar meu pedido:\n\n";
+            let total = 0;
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                message += `*${item.quantity}x ${item.name}* - ${formatCurrency(itemTotal)}\n`;
+                total += itemTotal;
+            });
+            
+            message += `\n*Total: ${formatCurrency(total)}*\n`;
+            message += `\n*--- Dados para Entrega ---*\n`;
+            message += `*Nome:* ${name || 'Não informado'}\n`;
+            message += `*Endereço:* ${address || 'Não informado'}\n`;
+            message += `*Telefone:* ${phone || 'Não informado'}\n`;
+
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        };
+
+        // --- FUNÇÃO UTILITÁRIA ---
+        // Precisa ser chamada após renderizar conteúdo com novos links de navegação
+        const rebindNavLinks = () => {
+            document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+                // Remove o listener antigo para evitar duplicação
+                link.replaceWith(link.cloneNode(true));
+            });
+            // Adiciona os listeners novamente
+            document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const page = link.dataset.page;
+                    const category = link.dataset.category;
+                    const productId = link.dataset.id;
+                    let param = category || productId;
+                    navigateTo(page, param);
+                });
+            });
+        };
+
+        // Inicia a aplicação
+        init();
+    });
+    </script>
+</body>
+</html>
+
+
+
+
+
