@@ -38,6 +38,11 @@
             letter-spacing: 1.5px;
             color: var(--gold);
         }
+        
+        /* Sombra no texto do banner */
+        .text-shadow {
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+        }
 
         /* Destaques em Dourado */
         .text-gold { color: var(--gold); }
@@ -143,9 +148,30 @@
         #cart-count.updated {
             transform: scale(1.2);
         }
+        
+        /* Notificação Toast */
+        #toast {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            background-color: var(--gold);
+            color: var(--black);
+            border-radius: 8px;
+            font-weight: 500;
+            z-index: 100;
+            transition: bottom 0.5s ease-in-out;
+        }
+        #toast.show {
+            bottom: 20px;
+        }
     </style>
 </head>
 <body>
+    
+    <!-- Notificação Toast -->
+    <div id="toast"></div>
 
     <!-- HEADER -->
     <header class="w-full border-b border-gold/20">
@@ -185,8 +211,8 @@
         <section id="home-page" class="page active">
             <!-- Banner -->
             <div class="h-[50vh] md:h-[60vh] bg-cover bg-center bg-no-repeat flex items-center justify-center" style="background-image: url('banner.webp');">
-                <div class="text-center bg-black/50 p-8 rounded-lg">
-                    <h1 class="text-3xl md:text-5xl font-display">Perfumes que marcam, sem pedir licença</h1>
+                <div class="text-center">
+                    <h1 class="text-3xl md:text-5xl font-display text-shadow">Perfumes que marcam, sem pedir licença</h1>
                 </div>
             </div>
             
@@ -470,6 +496,15 @@
             updateCartCount();
         };
 
+        const showToast = (message) => {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        };
+
         window.app = { // Expondo funções para o onclick
             addToCart: (productId) => {
                 const product = products.find(p => p.id === productId);
@@ -484,7 +519,7 @@
                 }
                 
                 saveCart();
-                alert(`${product.name} foi adicionado ao carrinho!`);
+                showToast(`${product.name} adicionado ao carrinho!`);
             },
             
             updateQuantity: (productId, change) => {
